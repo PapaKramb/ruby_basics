@@ -1,11 +1,11 @@
 class Train
-  attr_reader :number, :type, :route
-  attr_accessor :speed, :count, :station
+  attr_reader :number, :type, :route, :wagons
+  attr_accessor :speed, :station
 
-  def initialize(number, type, count)
+  def initialize(number)
     @number = number
     @type = type
-    @count = count
+    @wagons = wagons
     @speed = 0
   end
 
@@ -19,20 +19,25 @@ class Train
     puts "Текущая скорость: #{speed}"
   end
 
-  def add_wagon
-    if self.speed == 0
-      self.count += 1
+  def add_wagon(wagon)
+    stop
+    puts 'Поезд остановлен для добавления вагона в состав'
+    if wagon.type == @type
+      wagons << wagon
+      wagon.on_board = true
     else
-      puts 'Остановитесь чтобы прицепить вагон'
+      puts 'Этот вагон нельзя добавить в состав'
     end
   end
 
-  def delete_wagon
-    if self.speed == 0
-      self.count -= 1
-    else
-      puts 'Остановитесь чтобы отцепить вагон'
+  def delete_wagon(wagon)
+    stop
+    puts 'Поезд остановлен для удаления вагона из состава'
+    if @wagons.include?(wagon)
+      @wagons.delete(wagon)
+      return wagon.on_board = false
     end
+    puts 'Такого вагона нет в составе'
   end
 
   def route=(route)
