@@ -1,5 +1,4 @@
 class Train
-
   def initialize(number)
     @number = number
     @type = type
