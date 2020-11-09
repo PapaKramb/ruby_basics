@@ -1,6 +1,4 @@
 class Train
-  attr_reader :number, :type, :route, :wagons
-  attr_accessor :speed, :station
 
   def initialize(number)
     @number = number
@@ -68,6 +66,11 @@ class Train
   def previous_station
     route.stations[route.stations.index(station) - 1]
   end
+
+  protected # Переменные и метод, доступ к которым необязателен для юзеров. Все остальное используется в интерфейсе
+
+  attr_reader :number
+  attr_accessor :speed, :station, :type, :route, :wagons
 
   def move_next_station
     self.station = route.stations[route.staions.index(staion) + 1]

@@ -46,7 +46,7 @@ def choice(value)
   end
 end
 
-private #Не является клиентским кодом
+private # Не является клиентским кодом
 
 @stations = []
 @trains = []
