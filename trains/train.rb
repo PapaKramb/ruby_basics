@@ -1,37 +1,32 @@
 class Train
-  attr_reader :number, :type, :route
-  attr_accessor :speed, :count, :station
-
-  def initialize(number, type, count)
+  def initialize(number)
     @number = number
     @type = type
-    @count = count
+    @wagons = wagons
     @speed = 0
   end
 
   def train_speed(speed)
     self.speed += speed
-    puts "Текущая скорость: #{speed}"
   end
 
   def stop
     self.speed = 0
-    puts "Текущая скорость: #{speed}"
   end
 
-  def add_wagon
-    if self.speed == 0
-      self.count += 1
-    else
-      puts 'Остановитесь чтобы прицепить вагон'
+  def add_wagon(wagon)
+    stop
+    if wagon.type == @type
+      wagons << wagon
+      wagon.on_board = true
     end
   end
 
-  def delete_wagon
-    if self.speed == 0
-      self.count -= 1
-    else
-      puts 'Остановитесь чтобы отцепить вагон'
+  def delete_wagon(wagon)
+    stop
+    if @wagons.include?(wagon)
+      @wagons.delete(wagon)
+      wagon.on_board = false
     end
   end
 
@@ -63,6 +58,11 @@ class Train
   def previous_station
     route.stations[route.stations.index(station) - 1]
   end
+
+  protected # Переменные и метод, доступ к которым необязателен для юзеров. Все остальное используется в интерфейсе
+
+  attr_reader :number
+  attr_accessor :speed, :station, :type, :route, :wagons
 
   def move_next_station
     self.station = route.stations[route.staions.index(staion) + 1]
