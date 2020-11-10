@@ -8,33 +8,26 @@ class Train
 
   def train_speed(speed)
     self.speed += speed
-    puts "Текущая скорость: #{speed}"
   end
 
   def stop
     self.speed = 0
-    puts "Текущая скорость: #{speed}"
   end
 
   def add_wagon(wagon)
     stop
-    puts 'Поезд остановлен для добавления вагона в состав'
     if wagon.type == @type
       wagons << wagon
       wagon.on_board = true
-    else
-      puts 'Этот вагон нельзя добавить в состав'
     end
   end
 
   def delete_wagon(wagon)
     stop
-    puts 'Поезд остановлен для удаления вагона из состава'
     if @wagons.include?(wagon)
       @wagons.delete(wagon)
-      return wagon.on_board = false
+      wagon.on_board = false
     end
-    puts 'Такого вагона нет в составе'
   end
 
   def route=(route)
