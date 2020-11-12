@@ -6,6 +6,8 @@ require_relative 'trains/cargo_train'
 require_relative 'wagons/cargo_wagon'
 require_relative 'route'
 require_relative 'station'
+require_relative './modules/manufacturer'
+require_relative './modules/instance_counter'
 
 class Interface
   ERROR = 'Похоже что-то пошло не так'.freeze
@@ -51,15 +53,18 @@ class Interface
 
   private # Не является клиентским кодом
 
-  @stations = []
-  @trains = []
-  @routes = []
-  @wagons = []
+  def initialize
+    @stations = []
+    @trains = []
+    @routes = []
+    @wagons = []
+  end
 
   def create_station
     puts 'Название станции'
     name = gets.chomp
     @stations << Station.new(name)
+    puts "Сегодня была открыта станция #{name}"
   end
 
   def create_train
@@ -82,6 +87,8 @@ class Interface
     last = gets.to_i - 1
     return @routes << Route.new(@stations[first], @stations[last]) if @stations[first] && @stations[last]
 
+    puts "Создан маршрут из #{start_station.name} в #{finish_station.name}"
+
     puts ERROR
   end
 
@@ -95,6 +102,8 @@ class Interface
     index_station = gets.to_i - 1
     return @routes[index_route].add_intermediate(@stations[index_station]) if @stations[index_station]
 
+    puts "Станция #{station.name} добавлена в маршрут следования"
+
     puts ERROR
   end
 
@@ -107,6 +116,8 @@ class Interface
     puts 'Введите порядковый номер станции'
     index_station = gets.to_i - 1
     return @routes[index_route].delete_intermediate(@stations[index_station]) if @stations[index_station]
+
+    puts "Станция #{station.name} убрана из маршрута следования"
 
     puts ERROR
   end
@@ -128,6 +139,8 @@ class Interface
     type = gets.to_i
     return @wagons << PassengerWagon.new if type == 1
     return @wagons << CargoWagon.new if type == 2
+
+    puts 'Создан вагон'
 
     puts ERROR
   end

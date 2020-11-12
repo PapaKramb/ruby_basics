@@ -1,4 +1,12 @@
+require './modules/manufacturer'
+require './modules/instance_counter'
+
 class Train
+  include Manufacturer
+  include InstanceCounter
+
+  attr_reader :number
+
   def initialize(number)
     @number = number
     @type = type
@@ -61,7 +69,6 @@ class Train
 
   protected # Переменные и метод, доступ к которым необязателен для юзеров. Все остальное используется в интерфейсе
 
-  attr_reader :number
   attr_accessor :speed, :station, :type, :route, :wagons
 
   def move_next_station
