@@ -139,6 +139,7 @@ class Interface
     type = gets.to_i
     return @wagons << PassengerWagon.new if type == 1
     return @wagons << CargoWagon.new if type == 2
+
     puts 'Создан вагон'
 
     puts ERROR

@@ -1,9 +1,7 @@
 module Manufacturer
-  def manufacturer=(name)
-    self.manufacturer = name.capitalize
-  end
+  attr_reader :manufactorer
 
-  def manufacturer
-    manufacturer
+  def manufacturer(name)
+    self.manufacturer = name.capitalize
   end
 end
