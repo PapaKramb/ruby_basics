@@ -7,29 +7,11 @@ class Train
 
   attr_reader :number
 
-  NUMBER_FORMAT = /^[\w\d]{3}-?[\w\d]{2}$/.freeze
-
-  @@trains = {}
-
-  def self.find(number)
-    @@trains[number]
-  end
-
   def initialize(number)
     @number = number
     @type = type
     @wagons = wagons
     @speed = 0
-    validate!
-    @@trains[@number] = self
-    register_instance
-  end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
   end
 
   def train_speed(speed)
@@ -91,11 +73,5 @@ class Train
 
   def move_next_station
     self.station = route.stations[route.staions.index(staion) + 1]
-  end
-
-  def validate!
-    raise 'Номер поезда должен быть строкой' unless @number.is_a? String
-    raise 'Номер поезда не может быть не задан' if @number.empty?
-    raise 'Формат номера: ***-**' if @number !~ NUMBER_FORMAT
   end
 end
