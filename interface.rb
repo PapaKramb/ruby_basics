@@ -65,18 +65,27 @@ class Interface
     name = gets.chomp
     @stations << Station.new(name)
     puts "Сегодня была открыта станция #{name}"
+  rescue StandardError => e
+    puts e.message
+    retry
   end
 
   def create_train
+    puts 'Введите название поезда в формате ***-**'
+    number = gets.chomp
     puts '1. Пассажирский поезд'
     puts '2. Грузовой поезд'
     type = gets.to_i
-    puts 'Введите название поезда'
-    number = gets.chomp
-    return @trains << PassengerTrain.new(number) if type == 1
-    return @trains << CargoTrain.new(number) if type == 2
+    raise 'Введите 1 или 2' if (type != 1) && (type != 2)
 
-    puts ERROR
+    case type
+    when 1 then @trains << PassengerTrain.new(number)
+    when 2 then @trains << CargoTrain.new(number)
+    else create_train
+    end
+  rescue StandardError => e
+    puts e.message
+    retry
   end
 
   def create_route
@@ -88,8 +97,9 @@ class Interface
     return @routes << Route.new(@stations[first], @stations[last]) if @stations[first] && @stations[last]
 
     puts "Создан маршрут из #{start_station.name} в #{finish_station.name}"
-
-    puts ERROR
+  rescue StandardError => e
+    puts e.message
+    retry
   end
 
   def add_station
