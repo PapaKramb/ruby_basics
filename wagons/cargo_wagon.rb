@@ -31,5 +31,4 @@ class CargoWagon < Wagon
     raise 'Объем поезда должен быть числом' unless @free_volume.is_a? Integer
     raise 'Объем поезда не может быть отрицательным' if @free_volume < 0
   end
-  
 end

@@ -26,6 +26,7 @@ class Interface
       puts '10. Показать список станций'
       puts '11. Показать список поездов'
       puts '12. Показать список поездов на станции'
+      puts '13. Показать список вагонов в поезде'
       puts 'Для выхода введите "exit"'
       val = gets.chomp
       break if val == 'exit'
@@ -48,6 +49,8 @@ class Interface
     when 10 then show_stations
     when 11 then show_trains
     when 12 then show_trains_on_station
+    when 13 then show_wagons_in_train
+    else false
     end
   end
 
@@ -113,7 +116,6 @@ class Interface
     return @routes[index_route].add_intermediate(@stations[index_station]) if @stations[index_station]
 
     puts "Станция #{station.name} добавлена в маршрут следования"
-
   rescue StandardError => e
     puts e.message
     retry
@@ -130,7 +132,6 @@ class Interface
     return @routes[index_route].delete_intermediate(@stations[index_station]) if @stations[index_station]
 
     puts "Станция #{station.name} убрана из маршрута следования"
-
   rescue StandardError => e
     puts e.message
     retry
@@ -151,21 +152,20 @@ class Interface
     puts '1. Пассажирский'
     puts '2. Грузовой'
     type = gets.to_i
-    return @wagons << PassengerWagon.new if type == 1
-    return @wagons << CargoWagon.new if type == 2
     raise 'Введите 1 или 2' if (type != 1) && (type != 2)
 
     if type == 1
-      puts 'Введите объем грузового вагона'
-      volume = gets.to_i
-      @wagons << CargoWagon.new(volume)
-    else
       puts 'Введите кол-во мест в вагоне'
       tickets = gets.to_i
       @wagons << PassengerWagon.new(tickets)
+    else
+      puts 'Введите объем грузового вагона'
+      volume = gets.to_i
+      @wagons << CargoWagon.new(volume)
     end
   rescue StandardError => e
     puts e.message
+    retry
   end
 
   def train_change
@@ -212,46 +212,46 @@ class Interface
 
   def show_wagons_in_train
     train = choice_station
-    if train.type == :cargo
-      train.each_wagon do |i, c|
-        puts "#{i + 1}: Грузовой #{c.free_volume}/#{c.taken_volume}"
-      end
-    else
+    if train.type == :passenger
       train.each_wagon do |i, c|
         puts "#{i + 1}: Пассажирский #{c.free_seats}/#{c.taken_seats}"
       end
+    else
+      train.each_wagon do |i, c|
+        puts "#{i + 1}: Грузовой #{c.free_volume}/#{c.taken_volume}"
+      end
     end
   end
-  
+
   def choice_train
     puts 'Введите порядковый номер поезда'
     index_train = gets.to_i - 1
     raise 'Порядковый номер должен быть числом' unless index_train.is_a? Integer
     raise 'Порядковый номер не может быть меньше 1' if index_train < 0
     raise 'Поезд не существует' unless @trains[index_train]
-  
+
     @trains[index_train]
   end
-  
+
   def choice_station
     puts 'Введите порядковый номер станции'
     index_station = gets.to_i - 1
     raise 'Порядковый номер должен быть числом' unless index_station.is_a? Integer
     raise 'Порядковый номер не может быть меньше 1' if index_station < 0
     raise 'Станция не существует' unless @stations[index_station]
-  
+
     @stations[index_station]
   end
-  
+
   def choice_route
     raise 'Нет доступных маршрутов' if @routes.empty?
-  
+
     puts 'Введите порядковый номер маршрута'
     index_route = gets.to_i - 1
     raise 'Порядковый номер должен быть числом' unless index_route.is_a? Integer
     raise 'Порядковый номер не может быть меньше 1' if index_route < 0
     raise 'Маршрут не существует' unless @routes[index_route]
-  
+
     @routes[index_route]
   end
 end

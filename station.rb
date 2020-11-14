@@ -42,7 +42,7 @@ class Station
     end
   end
 
-  def type_trains(type)
+  def type_trains(_type)
     cargo = 0
     passenger = 0
     @trains.each { |train| train.type == :cargo ? cargo += 1 : passenger += 1 }
@@ -57,7 +57,7 @@ class Station
   private
 
   attr_writer :name, :trains
-  
+
   def validate!
     raise 'Название станции должно быть больше 2 символов' if @name.size < 3
   end
