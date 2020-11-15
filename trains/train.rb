@@ -45,6 +45,8 @@ class Train
     if wagon.type == @type
       wagons << wagon
       wagon.on_board = true
+    else
+      false
     end
   end
 
@@ -53,6 +55,8 @@ class Train
     if @wagons.include?(wagon)
       @wagons.delete(wagon)
       wagon.on_board = false
+    else
+      false
     end
   end
 
@@ -62,27 +66,50 @@ class Train
   end
 
   def move_forward
-    return if @route.nil?
-
-    station.send_train
-    self.station = next_station
-    station.get_train
+    i = @route.stations.index(@station)
+    if i == (@route.stations.size - 1)
+      false
+    else
+      @station = @route.stations[i + 1]
+      @station.add_train(self)
+    end
   end
 
   def move_back
-    return if @route.nil?
+    i = @route.stations.index(@station)
+    if i.zero?
+      false
+    else
+      @station = @route.stations[i - 1]
+      @station.add_train(self)
+    end
+  end
 
-    station.send_train
-    self.station = previous_station
-    station.get_train
+  def each_wagon(&block)
+    if block.arity == 2
+      @wagons.each_with_index { |wagon, index| yield index, wagon }
+    else
+      @wagons.each { |wagon| yield wagon }
+    end
   end
 
   def next_station
-    route.stations[route.stations.index(station) + 1]
+    return false unless @route
+
+    i = @route.stations.index(@station)
+    last_station = @route.stations.size - 1
+    return false if i == last_station
+
+    @route.stations[i + 1]
   end
 
   def previous_station
-    route.stations[route.stations.index(station) - 1]
+    return false unless @route
+
+    i = @route.stations.index(@station)
+    return false if i.zero?
+
+    @route.stations[i - 1]
   end
 
   protected # Переменные и метод, доступ к которым необязателен для юзеров. Все остальное используется в интерфейсе
