@@ -1,13 +1,17 @@
 require './modules/manufacturer'
 require './modules/instance_counter'
+require './modules/validation'
 
 class Train
   include Manufacturer
   include InstanceCounter
+  include Validation
 
-  attr_reader :number
+  attr_reader :number, :route
 
-  NUMBER_FORMAT = /^[\w\d]{3}-?[\w\d]{2}$/.freeze
+  validate :number, :presence
+  validate :number, :type, String
+  validate :number, :format, /^[\w\d]{3}-?[\w\d]{2}$/
 
   @@trains = {}
 
@@ -16,20 +20,13 @@ class Train
   end
 
   def initialize(number)
-    @number = number
+    @number = number.to_s
     @type = type
     @wagons = wagons
     @speed = 0
     validate!
     @@trains[@number] = self
     register_instance
-  end
-
-  def valid?
-    validate!
-    true
-  rescue StandardError
-    false
   end
 
   def train_speed(speed)
@@ -118,11 +115,5 @@ class Train
 
   def move_next_station
     self.station = route.stations[route.staions.index(staion) + 1]
-  end
-
-  def validate!
-    raise 'Номер поезда должен быть строкой' unless @number.is_a? String
-    raise 'Номер поезда не может быть не задан' if @number.empty?
-    raise 'Формат номера: ***-**' if @number !~ NUMBER_FORMAT
   end
 end
