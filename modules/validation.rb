@@ -41,20 +41,14 @@ module Validation
 
     def presence_validator(name, variable, _useless)
       raise "Variable #{name} is empty" if variable.nil? || variable == ''
-
-      true
     end
 
     def format_validator(name, variable, reg_pattern)
       raise "Variable #{name} has invalid format" if variable !~ reg_pattern
-
-      true
     end
 
     def type_validator(name, variable, type)
       raise "Variable #{name} has invalid type" unless variable.is_a? type
-
-      true
     end
   end
 end
